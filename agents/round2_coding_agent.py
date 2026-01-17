@@ -213,7 +213,7 @@ class CodingAgent(BaseInterviewAgent):
                     # Normalize to have "question" field for consistency
                     if "problem" in parsed and "question" not in parsed:
                         problem_data = parsed.get("problem", {})
-                        parsed["question"] = f"{problem_data.get('title', 'Coding Problem')}\n\n{problem_data.get('description', '')}"
+                        parsed["question"] = self._format_dsa_problem(problem_data)
                     return parsed
         except Exception as e:
             pass
@@ -230,7 +230,7 @@ class CodingAgent(BaseInterviewAgent):
         }
         
         return {
-            "question": f"{fallback_problem['title']}\n\n{fallback_problem['description']}",
+            "question": self._format_dsa_problem(fallback_problem),
             "problem": fallback_problem,
             "test_cases": {
                 "visible": [{"input": "[2,7,11,15], 9", "expected_output": "[0,1]"}],
@@ -239,6 +239,48 @@ class CodingAgent(BaseInterviewAgent):
             "hints": ["Consider using a hash map", "Think about what you need to find for each element"],
             "evaluation_criteria": {"correctness": 40, "efficiency": 30, "code_quality": 20, "edge_cases": 10}
         }
+    
+    def _format_dsa_problem(self, problem_data: Dict[str, Any]) -> str:
+        """Format DSA problem as structured markdown"""
+        title = problem_data.get('title', 'Coding Problem')
+        description = problem_data.get('description', '')
+        examples = problem_data.get('examples', [])
+        constraints = problem_data.get('constraints', [])
+        difficulty = problem_data.get('difficulty', 'medium')
+        topics = problem_data.get('topics', [])
+        
+        # Build formatted markdown
+        formatted = f"""# {title}
+
+**Difficulty:** {difficulty.capitalize()}  
+**Topics:** {', '.join(topics) if topics else 'General'}
+
+## Problem Description
+
+{description}
+
+## Examples
+
+"""
+        
+        # Add examples
+        for i, example in enumerate(examples, 1):
+            formatted += f"""**Example {i}:**
+```
+Input: {example.get('input', 'N/A')}
+Output: {example.get('output', 'N/A')}
+```
+"""
+            if 'explanation' in example:
+                formatted += f"*Explanation:* {example['explanation']}\n\n"
+        
+        # Add constraints
+        if constraints:
+            formatted += "## Constraints\n\n"
+            for constraint in constraints:
+                formatted += f"- {constraint}\n"
+        
+        return formatted.strip()
     
     def _parse_evaluation_response(self, response: str) -> Dict[str, Any]:
         try:

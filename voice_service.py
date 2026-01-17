@@ -25,7 +25,7 @@ class VoiceService:
         if not GENAI_AVAILABLE:
             raise ImportError("google-genai package not installed. Install with: pip install google-genai")
         
-        gemini_key = os.getenv("GEMINI_API_KEY")
+        gemini_key = "AIzaSyDB4-R5RuEb6t91WgsaLdQ1ssXtDHwczeI"
         if not gemini_key:
             raise ValueError("GEMINI_API_KEY not found in environment variables")
         
@@ -170,7 +170,7 @@ class VoiceService:
             from google import genai
             from google.genai import types
             
-            gemini_key = os.getenv("GEMINI_API_KEY").strip('"').strip("'")
+            gemini_key = "AIzaSyDB4-R5RuEb6t91WgsaLdQ1ssXtDHwczeI"
             client = genai.Client(api_key=gemini_key)
             
             print("🤖 Generating transcript with gemini-2.5-flash...")

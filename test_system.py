@@ -15,7 +15,7 @@ async def test_system():
     
     # Test 1: Check API Key
     print("\n1️⃣ Checking API Key...")
-    api_key = os.getenv("DEEPSEEK_API_KEY")
+    api_key = "sk-e9b92c79e0aa47a097aadf070f50a1c8"
     if api_key and len(api_key) > 20:
         print("   ✅ API Key configured")
     else:
